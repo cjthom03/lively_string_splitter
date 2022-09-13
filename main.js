@@ -24,15 +24,15 @@
 //  Edge Cases:
 //    - 'second' and 'half' should both represent 2, but 'second' must be the first word and 'half' must be the last
 var Oridinal = /** @class */ (function () {
-    function Oridinal() {
+    // TODO: stronger validations?
+    // parameter validations (spacing, number of words)?
+    // 'fifth of fourth' as an invalid input
+    // consider seperately requiring section and divisor strings as input
+    function Oridinal(ordinalDescription) {
+        this.ordinalDescription = ordinalDescription.split(' ');
+        this.selection = Oridinal.ordinalMap[this.ordinalDescription[0]];
+        this.divisor = Oridinal.ordinalMap[this.ordinalDescription[1]];
     }
-    Object.defineProperty(Oridinal.prototype, "ordMap", {
-        get: function () {
-            return Oridinal.ordinalMap;
-        },
-        enumerable: false,
-        configurable: true
-    });
     Oridinal.ordinalMap = function () {
         var ordinals = { 'hundreth': 100, 'half': 2 };
         var uniques = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh', 'twelfth', 'thirteenth', 'fourteenth', 'fifteenth', 'sixteenth', 'seventeenth', 'eighteenth', 'nineteenth'];
@@ -63,8 +63,10 @@ function parseOrdinalDescription(ordinalDescription) {
     }
     return oridinalStrings.slice(0, oridinalStrings.length - 1);
 }
+console.log(new Oridinal('first half'));
 function main(description, inputs) {
     var ordinalStrings = parseOrdinalDescription(description);
+    console.log(ordinalStrings);
     return [];
 }
 console.log(main(' second fourth of first half of it', ['abcd']));

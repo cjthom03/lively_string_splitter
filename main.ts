@@ -25,10 +25,14 @@
 //    - 'second' and 'half' should both represent 2, but 'second' must be the first word and 'half' must be the last
 
 type OrdinalMap = {
-  [key: string]: Number
+  [key: string]: number
 }
 
 class Oridinal {
+  ordinalDescription: string[];
+  selection: number;
+  divisor: number;
+
   static ordinalMap: OrdinalMap = function() {
     const ordinals = { 'hundreth': 100, 'half': 2 }
     const uniques = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh', 'twelfth', 'thirteenth', 'fourteenth', 'fifteenth', 'sixteenth', 'seventeenth', 'eighteenth', 'nineteenth'];
@@ -52,13 +56,15 @@ class Oridinal {
     return ordinals;
   }();
 
-  constructor() {
+  // TODO: stronger validations?
+  // parameter validations (spacing, number of words)?
+  // 'fifth of fourth' as an invalid input
+  // consider seperately requiring section and divisor strings as input
+  constructor(ordinalDescription: string) {
+    this.ordinalDescription = ordinalDescription.split(' ');
+    this.selection = Oridinal.ordinalMap[this.ordinalDescription[0]];
+    this.divisor = Oridinal.ordinalMap[this.ordinalDescription[1]];
   }
-
-  get ordMap() {
-    return Oridinal.ordinalMap;
-  }
-
 }
 
 // TODO: return error instead of throwing
@@ -72,8 +78,11 @@ function parseOrdinalDescription(ordinalDescription: string): string[] {
   return oridinalStrings.slice(0, oridinalStrings.length - 1);
 }
 
+console.log(new Oridinal('first half'))
+
 function main(description: string, inputs: string[]): string[] {
   const ordinalStrings = parseOrdinalDescription(description);
+  console.log(ordinalStrings)
   return []
 }
 
