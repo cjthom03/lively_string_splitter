@@ -20,21 +20,21 @@
 //  If time allows:
 //  4) Allow for user defined inputs as a CLI or UI (prefer UI), with error handling
 //
-//
-//  Edge Cases:
-//    - 'second' and 'half' should both represent 2, but 'second' must be the first word and 'half' must be the last
+//  Edge Cases
+//    - 'first first of it'
+//    - 'second second of it'
 
 type OrdinalMap = {
   [key: string]: number
 }
 
 class Oridinal {
-  ordinalDescription: string[];
+  ordinalDescription: string;
   selection: number;
   divisor: number;
 
   static ordinalMap: OrdinalMap = function() {
-    const ordinals = { 'hundreth': 100, 'half': 2 }
+    const ordinals = { 'hundreth': 100 }
     const uniques = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh', 'twelfth', 'thirteenth', 'fourteenth', 'fifteenth', 'sixteenth', 'seventeenth', 'eighteenth', 'nineteenth'];
     const tensPrefix = ['twent', 'thirt', 'fort', 'fift', 'sixt', 'sevent', 'eight', 'ninet'];
 
@@ -61,9 +61,12 @@ class Oridinal {
   // 'fifth of fourth' as an invalid input
   // consider seperately requiring section and divisor strings as input
   constructor(ordinalDescription: string) {
-    this.ordinalDescription = ordinalDescription.split(' ');
-    this.selection = Oridinal.ordinalMap[this.ordinalDescription[0]];
-    this.divisor = Oridinal.ordinalMap[this.ordinalDescription[1]];
+    this.ordinalDescription = ordinalDescription;
+
+    let ordinalParts = this.ordinalDescription.split(' ')
+
+    this.selection = Oridinal.ordinalMap[ordinalParts[0]];
+    this.divisor = Oridinal.ordinalMap[ordinalParts[1]];
   }
 }
 
@@ -78,28 +81,52 @@ function parseOrdinalDescription(ordinalDescription: string): string[] {
   return oridinalStrings.slice(0, oridinalStrings.length - 1);
 }
 
-console.log(new Oridinal('first half'))
 
-function main(description: string, inputs: string[]): string[] {
+function main(description: string, inputs: string[]): (string | Error)[] {
   const ordinalStrings = parseOrdinalDescription(description);
-  console.log(ordinalStrings)
-  return []
+  const ordinals = ordinalStrings.map((string: string) => new Oridinal(string))
+
+  const result = inputs.map((stringToSplit: string) => {
+    //TODO: probably can do some math to simplify
+    for(let i = ordinals.length - 1; i >= 0; i--) {
+      let ordinal = ordinals[i];
+
+      if(stringToSplit.length % ordinal.divisor !== 0) return new Error(`Input string is not divisible by ${ordinal.divisor}`)
+
+      //TODO: This error should happen earlier, and not returned for each input string
+      if(ordinal.divisor < ordinal.selection) return new Error(`Cannot select the ${ordinal.ordinalDescription} of the input string`)
+
+      let newLength = stringToSplit.length / ordinal.divisor;
+      let endIndex = (newLength * ordinal.selection);
+      let startIndex = endIndex - newLength;
+      stringToSplit = stringToSplit.substring(startIndex, endIndex);
+    }
+
+    return stringToSplit;
+  })
+
+  return result;
 }
 
-console.log(main(' second fourth of first half of it', ['abcd']))
+//console.log(' second fourth of first half of it', ['abcd']
+//console.log(main(' second fourth of first half of it', ['abcd']))
 // error
 
+console.log("second fourth of it", ["abcd", "abcdefgh"])
 console.log(main("second fourth of it", ["abcd", "abcdefgh"]))
 //would return
 //["b", "cd"]
 
+console.log("second third of first third of it", ["123456789"])
 console.log(main("second third of first third of it", ["123456789"]))
 //would return
 //["2"]
 
-console.log(main("third fourth of it", ["abcdef"]))
+//console.log("third fourth of it", ["abcdef"])
+//console.log(main("third fourth of it", ["abcdef"]))
 //would return an error because there is invalid input, 6 cannot be evenly divided into 4.
 
-console.log(main("fifth fourth of it", ["abcd"]))
+//console.log("fifth fourth of it", ["abcd"])
+//console.log(main("fifth fourth of it", ["abcd"]))
 //would return an error because there is invalid input, you can't take the fifth of four parts.
 
