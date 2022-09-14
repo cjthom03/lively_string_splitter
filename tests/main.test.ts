@@ -1,5 +1,15 @@
 import { main } from '../main';
 
+function inputString(length: number): string {
+  let chars = []
+
+  for(let i = 1; i <= length; i++) {
+    chars.push((i % 10).toString())
+  }
+
+  return chars.join('');
+}
+
 describe('main()', () => {
   describe('valid inputs', () => {
     test('valid description, with one valid string to split', () => {
@@ -18,6 +28,14 @@ describe('main()', () => {
 
     test('valid compound description, with one valid string to split', () => {
       expect(main("second third of first third of it", ['123456789'])).toEqual(['2'])
+    })
+
+    test('valid description, with larger ordinals and larger input strings', () => {
+      expect(main("thirtysecond ninetyeighth of it", [inputString(98), inputString(98*2)])).toEqual(['2', '34'])
+    })
+
+    test('valid compound description with large ordinals and large input string', () => {
+      expect(main("first thirtieth of twentieth fortieth of it", [inputString(30 * 40)])).toEqual(['0'])
     })
   })
 
