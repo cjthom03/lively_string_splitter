@@ -5,7 +5,7 @@ var OridinalPair = /** @class */ (function () {
     function OridinalPair(selectorDescription, divisorDescription) {
         var _this = this;
         this.valid = function () {
-            if (_this.selector > _this.divisor) {
+            if (_this.selector > _this.divisor || _this.divisor < 3) {
                 _this.error = new Error("Cannot take the ".concat(_this.selectorDescription, " ").concat(_this.divisorDescription, " of a string"));
                 return false;
             }

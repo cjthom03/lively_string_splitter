@@ -42,7 +42,7 @@ class OridinalPair {
   }
 
   valid = (): boolean => {
-    if(this.selector > this.divisor) {
+    if(this.selector > this.divisor || this.divisor < 3) {
       this.error = new Error(`Cannot take the ${this.selectorDescription} ${this.divisorDescription} of a string`);
       return false;
     };
