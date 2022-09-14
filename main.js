@@ -64,14 +64,6 @@ function main(description, inputs) {
     });
 }
 exports.main = main;
-console.log("second fourth of it", ["abcd", "abcdefgh"]);
-console.log(main("second fourth of it", ["abcd", "abcdefgh"]));
-//would return
-//["b", "cd"]
-console.log("second third of first third of it", ["123456789"]);
-console.log(main("second third of first third of it", ["123456789"]));
-//would return
-//["2"]
 console.log("third fourth of it", ["abcdef"]);
 console.log(main("third fourth of it", ["abcdef"]));
 //would return an error because there is invalid input, 6 cannot be evenly divided into 4.
