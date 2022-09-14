@@ -22,40 +22,55 @@ describe('main()', () => {
   })
 
   describe('invalid inputs', () => {
-    // one invalid string inputs
-    // one valid & one invalid string inputs
-    // two invalid string inputs
-    // undefined ordinals "first footh of it" (not needed, assuming perfect inputs?)
-
-
     test('valid description, with invalid length string to split', () => {
       const result = main("third fourth of it", ["abcdef"])[0];
       expect(result).toBeInstanceOf(Error)
       expect((result as Error).message).toBe("Input string is not divisible by 4")
     })
 
+    test('valid description, with one valid and one invalid string to be split', () => {
+      const result = main("eleventh eleventh of it", ['1234567890a', '123']);
+      expect(result[0]).toBe('a')
+      expect(result[1]).toBeInstanceOf(Error)
+      expect((result[1] as Error).message).toBe("Input string is not divisible by 11")
+    })
+
+    test('valid description, with two invalid strings to be split', () => {
+      const result = main("eleventh hundreth of it", ['1234567890a', '123']);
+      expect(result[0]).toBeInstanceOf(Error)
+      expect((result[1] as Error).message).toBe("Input string is not divisible by 100")
+      expect(result[1]).toBeInstanceOf(Error)
+      expect((result[1] as Error).message).toBe("Input string is not divisible by 100")
+    })
+
+    test('invalid description "first footh of it"', () => {
+      const result = main("first footh of it", ["abcdef"]);
+      expect(result).toBeInstanceOf(Error)
+      expect((result as Error).message).toBe("Cannot support taking the first footh of a string")
+    })
+
     test('invalid description "first first of it"', () => {
       const result = main("first first of it", ["abcdef"]);
       expect(result).toBeInstanceOf(Error)
-      expect((result as Error).message).toBe("Cannot take the first first of a string")
+      expect((result as Error).message).toBe("Cannot support taking the first first of a string")
     })
 
     test('invalid description "first second of it"', () => {
       const result = main("first second of it", ["abcdef"]);
       expect(result).toBeInstanceOf(Error)
-      expect((result as Error).message).toBe("Cannot take the first second of a string")
+      expect((result as Error).message).toBe("Cannot support taking the first second of a string")
     })
 
     test('invalid description where first ordinal is greater than the second', () => {
       const result = main("fifth fourth of it", ["abcd"])
       expect(result).toBeInstanceOf(Error);
-      expect((result as Error).message).toBe("Cannot take the fifth fourth of a string")
+      expect((result as Error).message).toBe("Cannot support taking the fifth fourth of a string")
     })
 
     test('invalid compunnd description with an ordinal pair where the first is greater than the second', () => {
       const result = main("first third of ninetythird fourth of it", ["abcd"])
       expect(result).toBeInstanceOf(Error);
-      expect((result as Error).message).toBe("Cannot take the ninetythird fourth of a string")
+      expect((result as Error).message).toBe("Cannot support taking the ninetythird fourth of a string")
     })
   })
 })

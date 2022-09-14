@@ -37,12 +37,16 @@ export class OridinalPair {
     this.error = undefined;
   }
 
+  get description() { return `${this.selectorDescription} ${this.divisorDescription}` }
+
   valid = (): boolean => {
-    if(this.selector > this.divisor || this.divisor < 3) {
-      this.error = new Error(`Cannot take the ${this.selectorDescription} ${this.divisorDescription} of a string`);
+    if(this.selector > this.divisor || this.divisor < 3 || this.selector === undefined || this.divisor === undefined) {
+      this.error = new Error(`Cannot support taking the ${this.description} of a string`);
       return false;
     };
 
     return true;
   }
+
+  invalid = (): boolean => !this.valid();
 }

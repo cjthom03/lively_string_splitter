@@ -13,7 +13,7 @@ export function main(description: string, inputs: string[]): Error | (string | E
   let [selector, divisor] = [1, 1];
 
   for(let i = 0; i < ordinals.length; i++) {
-    if(!ordinals[i].valid()) return ordinals[i].error;
+    if(ordinals[i].invalid()) return ordinals[i].error;
     selector *= ordinals[i].selector;
     divisor *= ordinals[i].divisor;
   }

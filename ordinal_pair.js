@@ -5,19 +5,25 @@ var OridinalPair = /** @class */ (function () {
     function OridinalPair(selectorDescription, divisorDescription) {
         var _this = this;
         this.valid = function () {
-            if (_this.selector > _this.divisor || _this.divisor < 3) {
-                _this.error = new Error("Cannot take the ".concat(_this.selectorDescription, " ").concat(_this.divisorDescription, " of a string"));
+            if (_this.selector > _this.divisor || _this.divisor < 3 || _this.selector === undefined || _this.divisor === undefined) {
+                _this.error = new Error("Cannot support taking the ".concat(_this.description, " of a string"));
                 return false;
             }
             ;
             return true;
         };
+        this.invalid = function () { return !_this.valid(); };
         this.selectorDescription = selectorDescription;
         this.divisorDescription = divisorDescription;
         this.selector = OridinalPair.ordinalMap[this.selectorDescription];
         this.divisor = OridinalPair.ordinalMap[this.divisorDescription];
         this.error = undefined;
     }
+    Object.defineProperty(OridinalPair.prototype, "description", {
+        get: function () { return "".concat(this.selectorDescription, " ").concat(this.divisorDescription); },
+        enumerable: false,
+        configurable: true
+    });
     OridinalPair.getOrdinalKey = function (value) {
         var uniques = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth',
             'eleventh', 'twelfth', 'thirteenth', 'fourteenth', 'fifteenth', 'sixteenth', 'seventeenth', 'eighteenth',

@@ -12,7 +12,7 @@ function main(description, inputs) {
     var ordinals = ordinalDescriptions.map(function (pairs) { return new ordinal_pair_1.OridinalPair(pairs[0], pairs[1]); });
     var _a = [1, 1], selector = _a[0], divisor = _a[1];
     for (var i = 0; i < ordinals.length; i++) {
-        if (!ordinals[i].valid())
+        if (ordinals[i].invalid())
             return ordinals[i].error;
         selector *= ordinals[i].selector;
         divisor *= ordinals[i].divisor;
