@@ -21,8 +21,8 @@
 //  4) Allow for user defined inputs as a CLI or UI (prefer UI), with error handling
 //
 //  Edge Cases
-//    - 'first first of it'
-//    - 'second second of it'
+//    - 'first first of it' (no need to support, but should defend against?)
+//    - 'second second of it' (no need to support, but should defend against?)
 
 type OrdinalMap = {
   [key: string]: number
