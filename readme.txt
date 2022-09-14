@@ -1,3 +1,14 @@
+How to run the tests:
+
+run `yarn install`
+run 'yarn test'
+
+Note: you may need Node version ^18.0.0 to use the latest version of Jest packages.
+
+-----------------------------------------------------------------------------------------
+
+Assignment Instructions:
+
 Retrieving a part of a string
 ---------------------------
 
@@ -32,7 +43,7 @@ Please organize your code so that it's not too difficult to follow, but feel fre
 
 -----------------------------------------------------------------------------------------
 
-Thought Process
+Initial Thought Process (before coding)
 
   Steps
 
@@ -52,9 +63,6 @@ Thought Process
      we can just use some math to figure out the starting and ending indices
      returning or throwing an error if the length of any given substring is not evenly divisible by the second number
      or returning the substring if it can be found
-
-  If time allows:
-  4) Allow for user defined inputs as a CLI or UI (prefer UI), with error handling
 
   Edge Cases
     - 'first first of it' (no need to support, but should defend against?)

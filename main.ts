@@ -6,7 +6,6 @@ function parseOrdinalDescription(ordinalDescription: string): string[][] {
   return oridinalStrings.slice(0, oridinalStrings.length - 1).map((description:string) => description.split(' '));
 }
 
-
 export function main(description: string, inputs: string[]): Error | (string | Error)[] {
   const ordinalDescriptions = parseOrdinalDescription(description);
   const ordinals = ordinalDescriptions.map((pairs: string[]) => new OridinalPair(pairs[0], pairs[1]))
