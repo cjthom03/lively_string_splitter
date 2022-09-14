@@ -2,14 +2,18 @@ type OrdinalMap = {
   [key: string]: number
 }
 
-class Oridinal {
-  ordinalDescription: string;
-  selection: number;
+class OridinalPair {
+  selectorDescription: string;
+  divisorDescription: string;
+  selector: number;
   divisor: number;
+  error: undefined | Error;
 
   static ordinalMap: OrdinalMap = function() {
     const ordinals = { 'hundreth': 100 }
-    const uniques = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh', 'twelfth', 'thirteenth', 'fourteenth', 'fifteenth', 'sixteenth', 'seventeenth', 'eighteenth', 'nineteenth'];
+    const uniques = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth',
+      'eleventh', 'twelfth', 'thirteenth', 'fourteenth', 'fifteenth', 'sixteenth', 'seventeenth', 'eighteenth',
+      'nineteenth'];
     const tensPrefix = ['twent', 'thirt', 'fort', 'fift', 'sixt', 'sevent', 'eight', 'ninet'];
 
     for(let i = 1; i < 100; i++) {
@@ -29,29 +33,38 @@ class Oridinal {
     return ordinals;
   }();
 
-  // TODO: stronger validations?
-  // parameter validations (spacing, number of words)?
-  // 'fifth of fourth' as an invalid input
-  // consider separately requiring section and divisor strings as input
-  constructor(ordinalDescription: string) {
-    this.ordinalDescription = ordinalDescription;
+  constructor(selectorDescription: string, divisorDescription: string) {
+    this.selectorDescription = selectorDescription;
+    this.divisorDescription = divisorDescription;
+    this.selector = OridinalPair.ordinalMap[this.selectorDescription];
+    this.divisor = OridinalPair.ordinalMap[this.divisorDescription];
+    this.error = undefined;
+  }
 
-    let ordinalParts = this.ordinalDescription.split(' ')
+  valid = (): boolean => {
+    if(this.selector > this.divisor) {
+      this.error = new Error(`Cannot take the ${this.selectorDescription} ${this.divisorDescription} of a string`);
+      return false;
+    };
 
-    this.selection = Oridinal.ordinalMap[ordinalParts[0]];
-    this.divisor = Oridinal.ordinalMap[ordinalParts[1]];
+    return true;
   }
 }
 
-function parseOrdinalDescription(ordinalDescription: string): string[] {
-  const oridinalStrings = ordinalDescription.split(' of ');
-  return oridinalStrings.slice(0, oridinalStrings.length - 1);
+// Input string is structured as: "First third of it" Or "First eighth of ninth twentieth of it"
+function parseOrdinalDescription(ordinalDescription: string): string[][] {
+  const oridinalStrings: string[] = ordinalDescription.split(' of ');
+  return oridinalStrings.slice(0, oridinalStrings.length - 1).map((description:string) => description.split(' '));
 }
 
 
-export function main(description: string, inputs: string[]): (string | Error)[] {
-  const ordinalStrings = parseOrdinalDescription(description);
-  const ordinals = ordinalStrings.map((string: string) => new Oridinal(string))
+export function main(description: string, inputs: string[]): Error | (string | Error)[] {
+  const ordinalDescriptions = parseOrdinalDescription(description);
+  const ordinals = ordinalDescriptions.map((pairs: string[]) => new OridinalPair(pairs[0], pairs[1]))
+
+  for(let i = 0; i < ordinals.length; i++) {
+    if(!ordinals[i].valid()) return ordinals[i].error;
+  }
 
   return inputs.map((stringToSplit: string) => {
     //TODO: probably can do some math to simplify
@@ -62,13 +75,8 @@ export function main(description: string, inputs: string[]): (string | Error)[] 
         return new Error(`Input string is not divisible by ${ordinal.divisor}`)
       }
 
-      //TODO: This error should happen earlier, and not returned for each input string
-      if(ordinal.divisor < ordinal.selection) {
-        return new Error(`Cannot select the ${ordinal.ordinalDescription} of the input string`)
-      }
-
       let newLength = stringToSplit.length / ordinal.divisor;
-      let endIndex = (newLength * ordinal.selection);
+      let endIndex = (newLength * ordinal.selector);
       let startIndex = endIndex - newLength;
 
       stringToSplit = stringToSplit.substring(startIndex, endIndex);
@@ -77,12 +85,3 @@ export function main(description: string, inputs: string[]): (string | Error)[] 
     return stringToSplit;
   })
 }
-
-console.log("third fourth of it", ["abcdef"])
-console.log(main("third fourth of it", ["abcdef"]))
-//would return an error because there is invalid input, 6 cannot be evenly divided into 4.
-
-console.log("fifth fourth of it", ["abcd"])
-console.log(main("fifth fourth of it", ["abcd"]))
-//would return an error because there is invalid input, you can't take the fifth of four parts.
-

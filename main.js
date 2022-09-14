@@ -1,20 +1,28 @@
 "use strict";
 exports.__esModule = true;
 exports.main = void 0;
-var Oridinal = /** @class */ (function () {
-    // TODO: stronger validations?
-    // parameter validations (spacing, number of words)?
-    // 'fifth of fourth' as an invalid input
-    // consider separately requiring section and divisor strings as input
-    function Oridinal(ordinalDescription) {
-        this.ordinalDescription = ordinalDescription;
-        var ordinalParts = this.ordinalDescription.split(' ');
-        this.selection = Oridinal.ordinalMap[ordinalParts[0]];
-        this.divisor = Oridinal.ordinalMap[ordinalParts[1]];
+var OridinalPair = /** @class */ (function () {
+    function OridinalPair(selectorDescription, divisorDescription) {
+        var _this = this;
+        this.valid = function () {
+            if (_this.selector > _this.divisor) {
+                _this.error = new Error("Cannot take the ".concat(_this.selectorDescription, " ").concat(_this.divisorDescription, " of a string"));
+                return false;
+            }
+            ;
+            return true;
+        };
+        this.selectorDescription = selectorDescription;
+        this.divisorDescription = divisorDescription;
+        this.selector = OridinalPair.ordinalMap[this.selectorDescription];
+        this.divisor = OridinalPair.ordinalMap[this.divisorDescription];
+        this.error = undefined;
     }
-    Oridinal.ordinalMap = function () {
+    OridinalPair.ordinalMap = function () {
         var ordinals = { 'hundreth': 100 };
-        var uniques = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh', 'twelfth', 'thirteenth', 'fourteenth', 'fifteenth', 'sixteenth', 'seventeenth', 'eighteenth', 'nineteenth'];
+        var uniques = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth',
+            'eleventh', 'twelfth', 'thirteenth', 'fourteenth', 'fifteenth', 'sixteenth', 'seventeenth', 'eighteenth',
+            'nineteenth'];
         var tensPrefix = ['twent', 'thirt', 'fort', 'fift', 'sixt', 'sevent', 'eight', 'ninet'];
         for (var i = 1; i < 100; i++) {
             var key = void 0;
@@ -31,15 +39,20 @@ var Oridinal = /** @class */ (function () {
         }
         return ordinals;
     }();
-    return Oridinal;
+    return OridinalPair;
 }());
+// Input string is structured as: "First third of it" Or "First eighth of ninth twentieth of it"
 function parseOrdinalDescription(ordinalDescription) {
     var oridinalStrings = ordinalDescription.split(' of ');
-    return oridinalStrings.slice(0, oridinalStrings.length - 1);
+    return oridinalStrings.slice(0, oridinalStrings.length - 1).map(function (description) { return description.split(' '); });
 }
 function main(description, inputs) {
-    var ordinalStrings = parseOrdinalDescription(description);
-    var ordinals = ordinalStrings.map(function (string) { return new Oridinal(string); });
+    var ordinalDescriptions = parseOrdinalDescription(description);
+    var ordinals = ordinalDescriptions.map(function (pairs) { return new OridinalPair(pairs[0], pairs[1]); });
+    for (var i = 0; i < ordinals.length; i++) {
+        if (!ordinals[i].valid())
+            return ordinals[i].error;
+    }
     return inputs.map(function (stringToSplit) {
         //TODO: probably can do some math to simplify
         for (var i = ordinals.length - 1; i >= 0; i--) {
@@ -47,12 +60,8 @@ function main(description, inputs) {
             if (stringToSplit.length % ordinal.divisor !== 0) {
                 return new Error("Input string is not divisible by ".concat(ordinal.divisor));
             }
-            //TODO: This error should happen earlier, and not returned for each input string
-            if (ordinal.divisor < ordinal.selection) {
-                return new Error("Cannot select the ".concat(ordinal.ordinalDescription, " of the input string"));
-            }
             var newLength = stringToSplit.length / ordinal.divisor;
-            var endIndex = (newLength * ordinal.selection);
+            var endIndex = (newLength * ordinal.selector);
             var startIndex = endIndex - newLength;
             stringToSplit = stringToSplit.substring(startIndex, endIndex);
         }
@@ -60,9 +69,3 @@ function main(description, inputs) {
     });
 }
 exports.main = main;
-console.log("third fourth of it", ["abcdef"]);
-console.log(main("third fourth of it", ["abcdef"]));
-//would return an error because there is invalid input, 6 cannot be evenly divided into 4.
-console.log("fifth fourth of it", ["abcd"]);
-console.log(main("fifth fourth of it", ["abcd"]));
-//would return an error because there is invalid input, you can't take the fifth of four parts.
