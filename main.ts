@@ -55,7 +55,7 @@ function parseOrdinalDescription(ordinalDescription: string): string[] {
 }
 
 
-function main(description: string, inputs: string[]): (string | Error)[] {
+export function main(description: string, inputs: string[]): (string | Error)[] {
   const ordinalStrings = parseOrdinalDescription(description);
   const ordinals = ordinalStrings.map((string: string) => new Oridinal(string))
 

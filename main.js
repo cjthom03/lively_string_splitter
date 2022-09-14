@@ -1,3 +1,6 @@
+"use strict";
+exports.__esModule = true;
+exports.main = void 0;
 var Oridinal = /** @class */ (function () {
     // TODO: stronger validations?
     // parameter validations (spacing, number of words)?
@@ -60,6 +63,7 @@ function main(description, inputs) {
         return stringToSplit;
     });
 }
+exports.main = main;
 console.log("second fourth of it", ["abcd", "abcdefgh"]);
 console.log(main("second fourth of it", ["abcd", "abcdefgh"]));
 //would return
