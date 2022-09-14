@@ -29,3 +29,35 @@ main("fifth fourth of it", ["abcd"])
 would return an error because there is invalid input, you can't take the fifth of four parts.
 
 Please organize your code so that it's not too difficult to follow, but feel free to use any convention you like for everything like tabs vs spaces etc!
+
+-----------------------------------------------------------------------------------------
+
+Thought Process
+
+  Steps
+
+  1) parse description string input and convert into numbers
+    start by assuming:
+      perfectly structured input (no error handling for user defined inputs at this stage);
+      simple input ('first fortieth of it') only, no compound inputs ('first tenth of first fortieth of it')
+    initial thought is to construct a hash table of with string keys and integer values that is
+    constructed at compile time or inside of an object as an instantly evaluated function
+
+  2) Adjust logic for compound inputs ('first tenth of first fortieth of it')
+     these can be stored in an array of arrays (e.g. [[1, 10], [1, 40]]) or maybe objects
+     storing them in reverse order could be good, since they will be evaluated in that order
+     (first, find the first 40th, then find the first 10th of that)
+
+  3) Apply the logic to locate the substring
+     we can just use some math to figure out the starting and ending indices
+     returning or throwing an error if the length of any given substring is not evenly divisible by the second number
+     or returning the substring if it can be found
+
+  If time allows:
+  4) Allow for user defined inputs as a CLI or UI (prefer UI), with error handling
+
+  Edge Cases
+    - 'first first of it' (no need to support, but should defend against?)
+    - 'second second of it' (no need to support, but should defend against?)
+
+
