@@ -33,12 +33,8 @@ var Oridinal = /** @class */ (function () {
     }();
     return Oridinal;
 }());
-// TODO: return error instead of throwing
 function parseOrdinalDescription(ordinalDescription) {
-    var oridinalStrings = ordinalDescription.trim().split(' of ');
-    if (oridinalStrings[oridinalStrings.length - 1].toLowerCase() !== 'it') {
-        throw 'Malformatted description: description must end with "of it"';
-    }
+    var oridinalStrings = ordinalDescription.split(' of ');
     return oridinalStrings.slice(0, oridinalStrings.length - 1);
 }
 function main(description, inputs) {
